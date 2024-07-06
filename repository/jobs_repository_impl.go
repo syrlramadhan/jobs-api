@@ -23,10 +23,10 @@ func (c JobsRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, jobs model.Job
 	return jobs;
 }
 
-func (c JobsRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx, companyName string) []model.Jobs{
+func (c JobsRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx, companyName string, limit int) []model.Jobs{
 
-	SQL := "select j.id, j.tittle, j.description, c.name from mst_jobs j JOIN mst_companies c on j.company_id = c.id where c.name like ?"
-	rows, err  := tx.Query(SQL, "%"+companyName+"%", )
+	SQL := "select j.id, j.tittle, j.description, c.name from mst_jobs j JOIN mst_companies c on j.company_id = c.id where c.name like ? limit ?"
+	rows, err  := tx.Query(SQL, "%"+companyName+"%", limit)
 	helper.SendPanicError(err)
 	defer rows.Close()
 
@@ -40,4 +40,15 @@ func (c JobsRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx, companyName
 	}
 
 	return jobs
+}
+
+func (c JobsRepositoryImpl) Count(ctx context.Context, tx *sql.Tx, companyName string) int{
+	
+	var result int
+	
+	SQL := "select count(*) from mst_jobs j JOIN mst_companies c on j.company_id = c.id where c.name like ?"
+	err  := tx.QueryRow(SQL, "%"+companyName+"%", ).Scan(&result)
+	helper.SendPanicError(err)
+
+	return result
 }

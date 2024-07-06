@@ -62,14 +62,24 @@ func (service *JobsServiceImpl) Create(ctx context.Context, request dto.JobsCrea
 	
 } 
 
-func (service *JobsServiceImpl) FindAll(ctx context.Context, companyName string) []dto.JobsResponse{
+func (service *JobsServiceImpl) FindAll(ctx context.Context, companyName string, limit int) []dto.JobsResponse{
 	
 	tx, err  := service.DB.Begin()
 	helper.SendPanicError(err)
 	defer helper.CommitOrRollback(tx)
 
-	jobs := service.JobsRepository.FindAll(ctx, tx, companyName)
+	jobs := service.JobsRepository.FindAll(ctx, tx, companyName, limit)
 
 	return helper.ToJobsListResponse(jobs)
 
+}
+
+func (service *JobsServiceImpl) Count(ctx context.Context, companyName string) int{
+	tx, err  := service.DB.Begin()
+	helper.SendPanicError(err)
+	defer helper.CommitOrRollback(tx)
+
+	count := service.JobsRepository.Count(ctx, tx, companyName)
+
+	return count;
 }

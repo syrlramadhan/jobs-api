@@ -36,13 +36,21 @@ func (controller *JobsControllerImpl) Create(writter http.ResponseWriter, reques
 }
 
 func (controller *JobsControllerImpl) FindAll(writter http.ResponseWriter, request *http.Request, params httprouter.Params){
+	
 	search := request.URL.Query().Get("search")
+	limitStr := request.URL.Query().Get("limit")
+	
+	// default value for limit
+	limit := helper.GetLimitValue(limitStr)
 
-	jobs := controller.JobsService.FindAll(request.Context(), search)
-	response := dto.Response{
+	jobs := controller.JobsService.FindAll(request.Context(), search, limit)
+	count := controller.JobsService.Count(request.Context(), search)
+	response := dto.ResponseList{
 		Code: 200,
 		Status: "OK",
 		Data: jobs,
+		Total: count,
+		Limit: limit,
 	}
 
 	writter.Header().Add("Content-Type", "application/json")
