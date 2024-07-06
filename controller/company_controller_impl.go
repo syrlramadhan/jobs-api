@@ -5,12 +5,14 @@ import (
 	"geemod/jobs-api/helper"
 	"geemod/jobs-api/service"
 	"net/http"
+	"sync"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 type CompanyControllerImpl struct{
 	CompanyService service.CompanyService
+	mu sync.Mutex
 }
 
 func NewCompanyController(companyService service.CompanyService) CompanyController{
@@ -21,6 +23,10 @@ func NewCompanyController(companyService service.CompanyService) CompanyControll
 
 func (controller *CompanyControllerImpl) Create(writter http.ResponseWriter, request *http.Request, params httprouter.Params){
 	
+	// kunci end-point dengan golang mutex sebelum di akses orang lain ( race condition)
+	controller.mu.Lock()
+	defer controller.mu.Unlock()
+
 	companyRequest := dto.CompanyCreateRequest{}
 	helper.ReadFromRequestBody(request, &companyRequest)
 
@@ -36,6 +42,10 @@ func (controller *CompanyControllerImpl) Create(writter http.ResponseWriter, req
 }
 
 func (controller *CompanyControllerImpl) Update(writter http.ResponseWriter, request *http.Request, params httprouter.Params){
+	
+	// kunci end-point dengan golang mutex sebelum di akses orang lain ( race condition)
+	controller.mu.Lock()
+	defer controller.mu.Unlock()
 	
 	companyRequest := dto.CompanyUpdateRequest{}
 	helper.ReadFromRequestBody(request, &companyRequest)

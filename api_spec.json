@@ -1,14 +1,320 @@
 {
-    "openapi": "3.0.3",
-    "info": {
-      "title": "JOBS RESTful API",
-      "description": "API Spec for Jobs RESTful API",
-      "version": "1.0.0"
-    },
-    "servers": [
-      {
-        "url": "http://localhost:3000/api"
+  "openapi": "3.0.3",
+  "info": {
+    "title": "JOBS RESTful API",
+    "description": "API Spec for Jobs RESTful API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api"
+    }
+  ],
+
+  "paths": {
+    "/api/companies/{companyId}": {
+      "put": {
+        "tags": ["Jobs API"],
+        "summary": "Update a company's name",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "deedc9a5-53d0-475d-a40c-60e6e78fcbd1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Inteleq Group"
+                  }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "deedc9a5-53d0-475d-a40c-60e6e78fcbd1"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Inteleq Group"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
-    ]
+    },
+    "/companies": {
+      "post": {
+        "tags": ["Jobs API"],
+        "summary": "Create a new company",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Testing Group"
+                  }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "deedc9a5-53d0-475d-a40c-60e6e78fcbd1"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Testing Group"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs": {
+      "get": {
+        "tags": ["Jobs API"],
+        "summary": "Get a list of jobs with limit and search",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items per page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 5
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search term for job title, description, or company name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "0270717f-5804-481f-86d0-2dd3adba5c46"
+                          },
+                          "company_id": {
+                            "type": "string",
+                            "example": ""
+                          },
+                          "company_name": {
+                            "type": "string",
+                            "example": "Jatis Group"
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Golang engineer"
+                          },
+                          "description": {
+                            "type": "string",
+                            "example": "Java, Golang, PHP"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "0001-01-01T00:00:00Z"
+                          }
+                        }
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "example": 5
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "example": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Jobs API"],
+        "summary": "Create a new job",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "company_id": {
+                    "type": "string",
+                    "example": "db1de0c6-2184-45f3-8542-cd16ce1eaf0c"
+                  },
+                  "tittle": {
+                    "type": "string",
+                    "example": "Back End engineer"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "Java, Golang, PHP"
+                  }
+                },
+                "required": ["company_id", "tittle", "description"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "OK"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "example": "29fe5636-7776-4112-b789-e2083075bc2d"
+                        },
+                        "company_id": {
+                          "type": "string",
+                          "example": "db1de0c6-2184-45f3-8542-cd16ce1eaf0c"
+                        },
+                        "company_name": {
+                          "type": "string",
+                          "example": "Jatis Group"
+                        },
+                        "tittle": {
+                          "type": "string",
+                          "example": "Back End engineer"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Java, Golang, PHP"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-07-07T03:23:44.732395+07:00"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
+}
   
