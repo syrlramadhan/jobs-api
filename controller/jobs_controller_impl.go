@@ -1,0 +1,49 @@
+package controller
+
+import (
+	"geemod/jobs-api/dto"
+	"geemod/jobs-api/helper"
+	"geemod/jobs-api/service"
+	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+)
+
+type JobsControllerImpl struct{
+	JobsService service.JobsService
+}
+
+func NewJobsController(jobsService service.JobsService) JobsController{
+	return &JobsControllerImpl{
+		JobsService: jobsService,
+	}
+}
+
+func (controller *JobsControllerImpl) Create(writter http.ResponseWriter, request *http.Request, params httprouter.Params){
+	
+	jobsRequest := dto.JobsCreateRequest{}
+	helper.ReadFromRequestBody(request, &jobsRequest)
+
+	jobsResponse := controller.JobsService.Create(request.Context(), jobsRequest)
+	response := dto.Response{
+		Code: 200,
+		Status: "OK",
+		Data: jobsResponse,
+	}
+
+	helper.WriteToResponseBody(writter, response)
+	
+}
+
+func (controller *JobsControllerImpl) FindAll(writter http.ResponseWriter, request *http.Request, params httprouter.Params){
+	
+	jobs := controller.JobsService.FindAll(request.Context())
+	response := dto.Response{
+		Code: 200,
+		Status: "OK",
+		Data: jobs,
+	}
+
+	writter.Header().Add("Content-Type", "application/json")
+	helper.WriteToResponseBody(writter, response)
+}
