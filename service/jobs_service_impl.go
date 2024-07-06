@@ -62,13 +62,13 @@ func (service *JobsServiceImpl) Create(ctx context.Context, request dto.JobsCrea
 	
 } 
 
-func (service *JobsServiceImpl) FindAll(ctx context.Context) []dto.JobsResponse{
+func (service *JobsServiceImpl) FindAll(ctx context.Context, companyName string) []dto.JobsResponse{
 	
 	tx, err  := service.DB.Begin()
 	helper.SendPanicError(err)
 	defer helper.CommitOrRollback(tx)
 
-	jobs := service.JobsRepository.FindAll(ctx, tx)
+	jobs := service.JobsRepository.FindAll(ctx, tx, companyName)
 
 	return helper.ToJobsListResponse(jobs)
 

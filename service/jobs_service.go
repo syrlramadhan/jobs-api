@@ -7,5 +7,5 @@ import (
 
 type JobsService interface{
 	Create(ctx context.Context, request dto.JobsCreateRequest) dto.JobsResponse
-	FindAll(ctx context.Context) []dto.JobsResponse
+	FindAll(ctx context.Context, companyName string) []dto.JobsResponse
 }

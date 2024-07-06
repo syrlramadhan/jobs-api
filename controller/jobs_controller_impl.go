@@ -36,8 +36,9 @@ func (controller *JobsControllerImpl) Create(writter http.ResponseWriter, reques
 }
 
 func (controller *JobsControllerImpl) FindAll(writter http.ResponseWriter, request *http.Request, params httprouter.Params){
-	
-	jobs := controller.JobsService.FindAll(request.Context())
+	search := request.URL.Query().Get("search")
+
+	jobs := controller.JobsService.FindAll(request.Context(), search)
 	response := dto.Response{
 		Code: 200,
 		Status: "OK",

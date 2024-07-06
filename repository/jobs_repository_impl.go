@@ -23,10 +23,10 @@ func (c JobsRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, jobs model.Job
 	return jobs;
 }
 
-func (c JobsRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []model.Jobs{
+func (c JobsRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx, companyName string) []model.Jobs{
 
-	SQL := "select j.id, j.tittle, j.description, c.name from mst_jobs j JOIN mst_companies c on j.company_id = c.id"
-	rows, err  := tx.QueryContext(ctx, SQL)
+	SQL := "select j.id, j.tittle, j.description, c.name from mst_jobs j JOIN mst_companies c on j.company_id = c.id where c.name like ?"
+	rows, err  := tx.Query(SQL, "%"+companyName+"%", )
 	helper.SendPanicError(err)
 	defer rows.Close()
 
