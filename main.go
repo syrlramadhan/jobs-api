@@ -15,10 +15,10 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func main(){
+func main() {
 	fmt.Println("--------- JOBS API ---------")
 
-	db := config.ConnectDB();
+	db := config.ConnectDB()
 	validate := validator.New()
 
 	// create object for company
@@ -30,7 +30,6 @@ func main(){
 	jobsRepository := repository.NewJobsRepository()
 	jobsService := service.NewJobsService(jobsRepository, companyRespository, db, validate)
 	jobsController := controller.NewJobsController(jobsService)
-
 
 	router := httprouter.New()
 
@@ -45,7 +44,7 @@ func main(){
 	router.PanicHandler = exception.ErrorHandler
 
 	server := http.Server{
-		Addr: "localhost:3000",
+		Addr:    "localhost:3000",
 		Handler: router,
 	}
 

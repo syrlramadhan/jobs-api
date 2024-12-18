@@ -14,24 +14,24 @@ import (
 	"github.com/google/uuid"
 )
 
-type JobsServiceImpl struct{
-	JobsRepository repository.JobsRepository
+type JobsServiceImpl struct {
+	JobsRepository    repository.JobsRepository
 	CompanyRepository repository.CompanyRepository
-	DB *sql.DB
-	Validate *validator.Validate
+	DB                *sql.DB
+	Validate          *validator.Validate
 }
 
-func NewJobsService(jobsRepository repository.JobsRepository, companyRepository repository.CompanyRepository, DB *sql.DB, validate *validator.Validate)JobsService{
+func NewJobsService(jobsRepository repository.JobsRepository, companyRepository repository.CompanyRepository, DB *sql.DB, validate *validator.Validate) JobsService {
 	return &JobsServiceImpl{
-		JobsRepository: jobsRepository,
+		JobsRepository:    jobsRepository,
 		CompanyRepository: companyRepository,
-		DB: DB,
-		Validate: validate,
+		DB:                DB,
+		Validate:          validate,
 	}
 }
 
-func (service *JobsServiceImpl) Create(ctx context.Context, request dto.JobsCreateRequest) dto.JobsResponse{
-	
+func (service *JobsServiceImpl) Create(ctx context.Context, request dto.JobsCreateRequest) dto.JobsResponse {
+
 	err := service.Validate.Struct(request)
 	helper.SendPanicError(err)
 
@@ -39,32 +39,32 @@ func (service *JobsServiceImpl) Create(ctx context.Context, request dto.JobsCrea
 	helper.SendPanicError(err)
 	defer helper.CommitOrRollback(tx)
 
-	company , err  := service.CompanyRepository.FindById(ctx, tx, request.CompanyId)
+	company, err := service.CompanyRepository.FindById(ctx, tx, request.CompanyId)
 	if err != nil {
 		panic(exception.NewNotFoundError(err.Error()))
 	}
 
 	newUUID := uuid.New()
-	uuidString := newUUID.String();
-	
+	uuidString := newUUID.String()
+
 	jobs := model.Jobs{
-		Id: uuidString,
-		CompanyId: company.Id,
-		Company: &company,
-		Tittle: request.Tittle,
+		Id:          uuidString,
+		CompanyId:   company.Id,
+		Company:     &company,
+		Tittle:      request.Tittle,
 		Description: request.Description,
-		CreateAt: time.Now(),
+		CreateAt:    time.Now(),
 	}
 
 	jobs = service.JobsRepository.Save(ctx, tx, jobs)
 
 	return helper.ToJobsRespose(jobs)
-	
-} 
 
-func (service *JobsServiceImpl) FindAll(ctx context.Context, companyName string, limit int) []dto.JobsResponse{
-	
-	tx, err  := service.DB.Begin()
+}
+
+func (service *JobsServiceImpl) FindAll(ctx context.Context, companyName string, limit int) []dto.JobsResponse {
+
+	tx, err := service.DB.Begin()
 	helper.SendPanicError(err)
 	defer helper.CommitOrRollback(tx)
 
@@ -74,12 +74,12 @@ func (service *JobsServiceImpl) FindAll(ctx context.Context, companyName string,
 
 }
 
-func (service *JobsServiceImpl) Count(ctx context.Context, companyName string) int{
-	tx, err  := service.DB.Begin()
+func (service *JobsServiceImpl) Count(ctx context.Context, companyName string) int {
+	tx, err := service.DB.Begin()
 	helper.SendPanicError(err)
 	defer helper.CommitOrRollback(tx)
 
 	count := service.JobsRepository.Count(ctx, tx, companyName)
 
-	return count;
+	return count
 }

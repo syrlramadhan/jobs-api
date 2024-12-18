@@ -5,28 +5,28 @@ import (
 	"geemod/jobs-api/model"
 )
 
-func ToCompanyResponse(company model.Company) dto.CompanyResponse{
+func ToCompanyResponse(company model.Company) dto.CompanyResponse {
 	return dto.CompanyResponse{
-		Id: company.Id,
+		Id:   company.Id,
 		Name: company.Name,
 	}
 }
 
-func ToJobsRespose(jobs model.Jobs) dto.JobsResponse{
+func ToJobsRespose(jobs model.Jobs) dto.JobsResponse {
 	return dto.JobsResponse{
-		Id: jobs.Id,
-		CompanyId: jobs.CompanyId,
+		Id:          jobs.Id,
+		CompanyId:   jobs.CompanyId,
 		CompanyName: jobs.Company.Name,
-		Tittle: jobs.Tittle,
+		Tittle:      jobs.Tittle,
 		Description: jobs.Description,
-		CreatedAt: jobs.CreateAt,
+		CreatedAt:   jobs.CreateAt,
 	}
 }
 
-func ToJobsListResponse(jobs []model.Jobs) []dto.JobsResponse{
+func ToJobsListResponse(jobs []model.Jobs) []dto.JobsResponse {
 	var jobsResponses []dto.JobsResponse
-	for _, job := range jobs{
+	for _, job := range jobs {
 		jobsResponses = append(jobsResponses, ToJobsRespose(job))
 	}
-	return jobsResponses;
+	return jobsResponses
 }

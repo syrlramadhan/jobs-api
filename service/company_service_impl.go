@@ -13,22 +13,22 @@ import (
 	"github.com/google/uuid"
 )
 
-type CompanyServiceImpl struct{
+type CompanyServiceImpl struct {
 	CompanyRepository repository.CompanyRepository
-	DB *sql.DB
-	Validate *validator.Validate
+	DB                *sql.DB
+	Validate          *validator.Validate
 }
 
-func NewCompanyService(companyRepository repository.CompanyRepository, DB *sql.DB, validate *validator.Validate)CompanyService{
+func NewCompanyService(companyRepository repository.CompanyRepository, DB *sql.DB, validate *validator.Validate) CompanyService {
 	return &CompanyServiceImpl{
 		CompanyRepository: companyRepository,
-		DB: DB,
-		Validate: validate,
+		DB:                DB,
+		Validate:          validate,
 	}
 }
 
-func (service *CompanyServiceImpl) Create(ctx context.Context, request dto.CompanyCreateRequest) dto.CompanyResponse{
-	
+func (service *CompanyServiceImpl) Create(ctx context.Context, request dto.CompanyCreateRequest) dto.CompanyResponse {
+
 	err := service.Validate.Struct(request)
 	helper.SendPanicError(err)
 
@@ -37,10 +37,10 @@ func (service *CompanyServiceImpl) Create(ctx context.Context, request dto.Compa
 	defer helper.CommitOrRollback(tx)
 
 	newUUID := uuid.New()
-	uuidString := newUUID.String();
+	uuidString := newUUID.String()
 
 	company := model.Company{
-		Id: uuidString,
+		Id:   uuidString,
 		Name: request.Name,
 	}
 
@@ -50,8 +50,8 @@ func (service *CompanyServiceImpl) Create(ctx context.Context, request dto.Compa
 
 }
 
-func (service *CompanyServiceImpl) Update(ctx context.Context, request dto.CompanyUpdateRequest) dto.CompanyResponse{
-	
+func (service *CompanyServiceImpl) Update(ctx context.Context, request dto.CompanyUpdateRequest) dto.CompanyResponse {
+
 	err := service.Validate.Struct(request)
 	helper.SendPanicError(err)
 
@@ -59,7 +59,7 @@ func (service *CompanyServiceImpl) Update(ctx context.Context, request dto.Compa
 	helper.SendPanicError(err)
 	defer helper.CommitOrRollback(tx)
 
-	company , err  := service.CompanyRepository.FindById(ctx, tx, request.Id)
+	company, err := service.CompanyRepository.FindById(ctx, tx, request.Id)
 	if err != nil {
 		panic(exception.NewNotFoundError(err.Error()))
 	}
@@ -68,9 +68,9 @@ func (service *CompanyServiceImpl) Update(ctx context.Context, request dto.Compa
 	company = service.CompanyRepository.Update(ctx, tx, company)
 
 	return helper.ToCompanyResponse(company)
-	
+
 }
 
-func (service *CompanyServiceImpl) FindByID(ctx context.Context, categoryID string) dto.CompanyResponse{
+func (service *CompanyServiceImpl) FindByID(ctx context.Context, categoryID string) dto.CompanyResponse {
 	panic("impl mee")
 }

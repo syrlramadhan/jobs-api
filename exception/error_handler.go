@@ -8,7 +8,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func ErrorHandler(writter http.ResponseWriter, request *http.Request, err interface{}){
+func ErrorHandler(writter http.ResponseWriter, request *http.Request, err interface{}) {
 	if notFoundError(writter, err) {
 		return
 	}
@@ -32,12 +32,12 @@ func validationErrors(writer http.ResponseWriter, err interface{}) bool {
 
 		helper.WriteToResponseBody(writer, webResponse)
 		return true
-	}else{
+	} else {
 		return false
 	}
 }
 
-func notFoundError(writter http.ResponseWriter, err interface{})bool{
+func notFoundError(writter http.ResponseWriter, err interface{}) bool {
 	exception, ok := err.(NotFoundError)
 	if ok {
 		writter.Header().Set("Content-Type", "application/json")
@@ -56,14 +56,14 @@ func notFoundError(writter http.ResponseWriter, err interface{})bool{
 	}
 }
 
-func internalServerError(writter http.ResponseWriter, err interface{}){
-	writter.Header().Set("Content-Type","application/json")
+func internalServerError(writter http.ResponseWriter, err interface{}) {
+	writter.Header().Set("Content-Type", "application/json")
 	writter.WriteHeader(http.StatusInternalServerError)
 
 	webResponse := dto.Response{
-		Code: http.StatusInternalServerError,
+		Code:   http.StatusInternalServerError,
 		Status: "INTERNAL SERVER ERROR",
-		Data: err,
+		Data:   err,
 	}
 
 	helper.WriteToResponseBody(writter, webResponse)

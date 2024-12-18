@@ -6,9 +6,9 @@ import (
 	"time"
 )
 
-func ConnectDB() *sql.DB{
-	
-	db, err := sql.Open("mysql", "root:root@tcp(localhost:8889)/corporate?parseTime=true")
+func ConnectDB() *sql.DB {
+
+	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/corporate?parseTime=true")
 	helper.SendPanicError(err)
 
 	db.SetMaxIdleConns(5)

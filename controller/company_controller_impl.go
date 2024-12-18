@@ -10,19 +10,19 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-type CompanyControllerImpl struct{
+type CompanyControllerImpl struct {
 	CompanyService service.CompanyService
-	mu sync.Mutex
+	mu             sync.Mutex
 }
 
-func NewCompanyController(companyService service.CompanyService) CompanyController{
+func NewCompanyController(companyService service.CompanyService) CompanyController {
 	return &CompanyControllerImpl{
 		CompanyService: companyService,
 	}
 }
 
-func (controller *CompanyControllerImpl) Create(writter http.ResponseWriter, request *http.Request, params httprouter.Params){
-	
+func (controller *CompanyControllerImpl) Create(writter http.ResponseWriter, request *http.Request, params httprouter.Params) {
+
 	// kunci end-point dengan golang mutex sebelum di akses orang lain ( race condition)
 	controller.mu.Lock()
 	defer controller.mu.Unlock()
@@ -32,21 +32,21 @@ func (controller *CompanyControllerImpl) Create(writter http.ResponseWriter, req
 
 	companyResponse := controller.CompanyService.Create(request.Context(), companyRequest)
 	response := dto.Response{
-		Code: 200,
+		Code:   200,
 		Status: "OK",
-		Data: companyResponse,
+		Data:   companyResponse,
 	}
 
 	helper.WriteToResponseBody(writter, response)
 
 }
 
-func (controller *CompanyControllerImpl) Update(writter http.ResponseWriter, request *http.Request, params httprouter.Params){
-	
+func (controller *CompanyControllerImpl) Update(writter http.ResponseWriter, request *http.Request, params httprouter.Params) {
+
 	// kunci end-point dengan golang mutex sebelum di akses orang lain ( race condition)
 	controller.mu.Lock()
 	defer controller.mu.Unlock()
-	
+
 	companyRequest := dto.CompanyUpdateRequest{}
 	helper.ReadFromRequestBody(request, &companyRequest)
 
@@ -55,12 +55,12 @@ func (controller *CompanyControllerImpl) Update(writter http.ResponseWriter, req
 
 	companyResponse := controller.CompanyService.Update(request.Context(), companyRequest)
 	response := dto.Response{
-		Code: 200,
+		Code:   200,
 		Status: "OK",
-		Data: companyResponse,
+		Data:   companyResponse,
 	}
 
 	writter.Header().Add("Content-Type", "application/json")
 	helper.WriteToResponseBody(writter, response)
-	
+
 }
